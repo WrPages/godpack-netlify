@@ -13,7 +13,7 @@ const fetch = require("node-fetch")
     }
 
     const GIST_ID = "1fc02ff0921e82b3af1d3101cee44e4c"
-    const TOKEN = "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"
+    const TOKEN = "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"
     const FILE_NAME = "ids.txt"
 
     const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`)

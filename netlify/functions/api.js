@@ -31,7 +31,12 @@ const fetch = require("node-fetch")
       ids = ids.filter(x => x !== id)
     }
 
-    const newContent = ids.join("\n")
+    let newContent = ids.join("\n")
+
+// 🔥 evitar que el archivo quede vacío
+if (newContent.trim() === "") {
+  newContent = "# empty"
+}
 
     const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
       method: "PATCH",

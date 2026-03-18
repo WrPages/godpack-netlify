@@ -33,6 +33,11 @@ const fetch = require("node-fetch")
 
     let newContent = ids.join("\n")
 
+// 🔥 evitar archivo vacío SIN mostrar texto
+if (newContent.trim() === "") {
+  newContent = "\u200B" // invisible
+}
+
 // 🔥 evitar que el archivo quede vacío
 if (newContent.trim() === "") {
   newContent = "# empty"

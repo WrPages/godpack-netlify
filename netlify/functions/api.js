@@ -15,7 +15,6 @@ exports.handler = async (event) => {
     const TOKEN = "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"
     const FILE_NAME = "ids.txt"
 
-    // 🔹 obtener gist
     const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`)
     const gist = await gistRes.json()
 
@@ -33,27 +32,39 @@ exports.handler = async (event) => {
 
     const newContent = ids.join("\n")
 
-    // 🔹 actualizar gist
-const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-  method: "PATCH",
-  headers: {
-    Authorization: `Bearer ${TOKEN}`,
-    Accept: "application/vnd.github+json"
-  },
-  body: JSON.stringify({
-    files: {
-      [FILE_NAME]: {
-        content: newContent
+    const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        Accept: "application/vnd.github+json"
+      },
+      body: JSON.stringify({
+        files: {
+          [FILE_NAME]: {
+            content: newContent
+          }
+        }
+      })
+    })
+
+    const updateText = await updateRes.text()
+
+    if (!updateRes.ok) {
+      return {
+        statusCode: 500,
+        body: "GIST ERROR:\n" + updateText
       }
     }
-  })
-})
 
-const updateText = await updateRes.text()
+    return {
+      statusCode: 200,
+      body: "OK"
+    }
 
-if (!updateRes.ok) {
-  return {
-    statusCode: 500,
-    body: "GIST ERROR:\n" + updateText
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: "ERROR:\n" + err.message
+    }
   }
 }

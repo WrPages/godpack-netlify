@@ -12,7 +12,7 @@ exports.handler = async (event) => {
     }
 
     const GIST_ID = "1fc02ff0921e82b3af1d3101cee44e4c"
-    const TOKEN = "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"
+    const TOKEN = "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"
     const FILE_NAME = "ids.txt"
 
     const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`)

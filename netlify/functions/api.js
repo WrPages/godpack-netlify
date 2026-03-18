@@ -34,30 +34,26 @@ export async function handler(event) {
     const newContent = ids.join("\n")
 
     // 🔹 actualizar gist
-    await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-        Accept: "application/vnd.github+json"
-      },
-      body: JSON.stringify({
-        files: {
-          [FILE_NAME]: {
-            content: newContent
-          }
-        }
-      })
-    })
-
-    return {
-      statusCode: 200,
-      body: "OK"
+const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    Accept: "application/vnd.github+json"
+  },
+  body: JSON.stringify({
+    files: {
+      [FILE_NAME]: {
+        content: newContent
+      }
     }
+  })
+})
 
-  } catch (err) {
-    return {
-      statusCode: 500,
-      body: "ERROR: " + err.message
-    }
+const updateText = await updateRes.text()
+
+if (!updateRes.ok) {
+  return {
+    statusCode: 500,
+    body: "GIST ERROR:\n" + updateText
   }
 }

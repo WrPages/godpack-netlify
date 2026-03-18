@@ -12,7 +12,7 @@ export async function handler(event) {
     }
 
     const GIST_ID = "1fc02ff0921e82b3af1d3101cee44e4c"
-    const TOKEN = "T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"
+    const TOKEN = "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"
     const FILE_NAME = "ids.txt"
 
     // 🔹 obtener gist

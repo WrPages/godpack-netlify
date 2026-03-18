@@ -16,21 +16,27 @@ const fetch = require("node-fetch")
     const TOKEN = process.env.GITHUB_TOKEN
     const FILE_NAME = "ids.txt"
 
-    const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`)
-    const gist = await gistRes.json()
+const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    Accept: "application/vnd.github+json",
+    "Cache-Control": "no-cache"
+  }
+})
 
-    let content = gist.files[FILE_NAME].content
+const gist = await gistRes.json()
 
-    let ids = content.split("\n").filter(x => x.trim() !== "")
+let content = gist.files[FILE_NAME]?.content || ""
+let ids = content.split("\n").filter(x => x.trim() !== "")
+    
+if (action === "online") {
+  ids = ids.filter(x => x !== id) // 🔥 limpiar duplicados
+  ids.push(id)
+}
 
-    if (action === "online") {
-      if (!ids.includes(id)) ids.push(id)
-    }
-
-    if (action === "offline") {
-      ids = ids.filter(x => x !== id)
-    }
-
+if (action === "offline") {
+  ids = ids.filter(x => x !== id) // 🔥 eliminar SIEMPRE
+}
     let newContent = ids.join("\n")
 
 // 🔥 evitar archivo vacío SIN mostrar texto
@@ -38,10 +44,7 @@ if (newContent.trim() === "") {
   newContent = "\u200B" // invisible
 }
 
-// 🔥 evitar que el archivo quede vacío
-if (newContent.trim() === "") {
-  newContent = "# empty"
-}
+
 
     const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
       method: "PATCH",

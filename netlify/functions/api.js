@@ -1,4 +1,5 @@
-exports.handler = async (event) => {
+const fetch = require("node-fetch")
+  exports.handler = async (event) => {
   try {
     const params = new URLSearchParams(event.queryStringParameters)
     const action = params.get("action")

@@ -25,9 +25,9 @@ exports.handler = async (event) => {
 
     // 🔥 MAPEO DE GRUPOS A GISTS
     const GROUP_GISTS = {
-      Trainer: "GIST_IDS_TRAINER",
-      Gym_Leader: "GIST_IDS_GYM",
-      Elite_Four: "GIST_IDS_ELITE"
+      Trainer: "4edcf4d341cd4f7d5d0fb8a50f8b8c3c",
+      Gym_Leader: "e110c37b3e0b8de83a33a1b0a5eb64e8",
+      Elite_Four: "d9db3a72fed74c496fd6cc830f9ca6e9"
     }
 
     const GIST_ID = GROUP_GISTS[group]

@@ -7,42 +7,39 @@ exports.handler = async (event) => {
 
     const action = params.get("action")
     const id = params.get("id")
-    const group = params.get("group") // 🔥 NUEVO
+    const group = params.get("group")
 
     if (!id) {
-      return {
-        statusCode: 400,
-        body: "Missing ID"
-      }
+      return { statusCode: 400, body: "Missing ID" }
     }
 
     if (!group) {
-      return {
-        statusCode: 400,
-        body: "Missing group"
-      }
+      return { statusCode: 400, body: "Missing group" }
     }
 
-    // 🔥 MAPEO DE GRUPOS A GISTS
+    // 🔥 GISTS POR GRUPO
     const GROUP_GISTS = {
       Trainer: "4edcf4d341cd4f7d5d0fb8a50f8b8c3c",
       Gym_Leader: "e110c37b3e0b8de83a33a1b0a5eb64e8",
       Elite_Four: "d9db3a72fed74c496fd6cc830f9ca6e9"
     }
 
-    const GIST_ID = GROUP_GISTS[group]
+    // 🔥 ARCHIVOS POR GRUPO
+    const GROUP_FILES = {
+      Trainer: "trainer_ids.txt",
+      Gym_Leader: "gym_ids.txt",
+      Elite_Four: "elite_ids.txt"
+    }
 
-    if (!GIST_ID) {
-      return {
-        statusCode: 400,
-        body: "Invalid group"
-      }
+    const GIST_ID = GROUP_GISTS[group]
+    const FILE_NAME = GROUP_FILES[group]
+
+    if (!GIST_ID || !FILE_NAME) {
+      return { statusCode: 400, body: "Invalid group" }
     }
 
     const TOKEN = process.env.GITHUB_TOKEN
-    const FILE_NAME = "ids.txt"
 
-    // 🔎 Obtener gist correcto según grupo
     const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
       headers: {
         Authorization: `Bearer ${TOKEN}`,
@@ -72,12 +69,10 @@ exports.handler = async (event) => {
 
     let newContent = ids.join("\n")
 
-    // 🔥 evitar archivo vacío
     if (newContent.trim() === "") {
       newContent = "\u200B"
     }
 
-    // 🔄 Actualizar gist del grupo
     const updateRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
       method: "PATCH",
       headers: {
@@ -102,10 +97,7 @@ exports.handler = async (event) => {
       }
     }
 
-    return {
-      statusCode: 200,
-      body: "OK"
-    }
+    return { statusCode: 200, body: "OK" }
 
   } catch (err) {
     return {

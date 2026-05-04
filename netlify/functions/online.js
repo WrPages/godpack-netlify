@@ -3,9 +3,13 @@ const fetch = require("node-fetch");
 exports.handler = async (event) => {
   try {
     const params = new URLSearchParams(event.queryStringParameters || {});
+
     const group = params.get("group");
+    const type = params.get("type") || "online"; 
+    // Si no mandas type, usa online por defecto.
 
     const allowedGroups = ["Trainer", "Gym_Leader", "Elite_Four"];
+    const allowedTypes = ["online", "vip"];
 
     if (!group || !allowedGroups.includes(group)) {
       return {
@@ -15,6 +19,17 @@ exports.handler = async (event) => {
           "Access-Control-Allow-Origin": "*"
         },
         body: "Invalid group"
+      };
+    }
+
+    if (!allowedTypes.includes(type)) {
+      return {
+        statusCode: 400,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: "Invalid type. Use online or vip."
       };
     }
 
@@ -32,7 +47,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const key = `online:${group}`;
+    const key = `${type}:${group}`;
 
     const res = await fetch(
       `${UPSTASH_URL}/smembers/${encodeURIComponent(key)}`,
